@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Cart</title>
+
+    <!-- Include common head (Bootstrap, fonts, styles) -->
+    <th:block th:replace="~{globalnavbar :: commonHead}"></th:block>
+
+    <link rel="stylesheet" th:href="@{/css/cart-style.css}" />
+
+</head>
+
+<body>
+
+<!-- Include Navbar Fragment -->
+<th:block th:replace="~{globalnavbar :: navbar}"></th:block>
+
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center fw-bold">Your Cart</h2>
+    <div th:if="${items.size() > 0}">
+        <div class="row">
+            <!-- Left: Product Items -->
+            <div class="col-md-8">
+                <div th:each="item : ${items}" class="product-card ">
+                    <img th:src="@{'/images/' + ${item.imageUrl}}" alt="Product" class="product-img"
+                         onerror="this.src='https://via.placeholder.com/90'">
+
+                    <div class="product-details">
+                        <h5 th:text="${item.name}">Product Name</h5>
+                        <p class="product-details-text" th:text="${item.description}"></p>
+                        <p><strong>Price: ₹</strong><span th:text="${item.price}">0</span></p>
+                        <p><strong>Quantity: </strong><span th:text="${item.quantity}">1</span></p>
+                        <p class="fw-bold text-success mb-3">Subtotal: ₹<span th:text="${item.price * item.quantity}">0</span></p>
+
+                        <a th:href="@{'/cart/remove/' + ${item.id}}"
+                           onclick="if (!(confirm('Are you sure you want to remove this item?'))) return false"
+                           class="remove-btn"><i class="bi bi-trash"></i>Remove</a>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Summary -->
+            <div class="col-md-4">
+                <div class="s-box">
+                    <div class="price-details">
+
+
+                        <h5>Price Details</h5>
+                        <div class="price-row">
+                            <span>Price (<span th:text="${items.size()}"></span> items)</span>
+                            <span>₹<span th:text="${total}"></span></span>
+                        </div>
+                        <div class="price-row">
+                            <span>Discount</span>
+                            <span class="text-success">− ₹0</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Delivery Charges</span>
+                            <span class="text-success">Free</span>
+                        </div>
+                        <hr>
+                        <div class="price-row fw-bold">
+                            <span>Total Amount</span>
+                            <span>₹<span th:text="${total}">0</span></span>
+                        </div>
+                        <a th:href="@{/checkout}">
+                            <button class="place-order-btn mt-4">PLACE ORDER</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Empty Cart -->
+    <div class="container mt-5" th:if="${items.size() == 0}">
+        <div class="empty-cart">
+            <h4>Your cart is empty!</h4>
+            <p>Add items to it now.</p>
+            <a th:href="@{/products}" class="btn btn-primary">Shop Now</a>
+        </div>
+    </div>
+
+
+
+    <!-- Item AddedNotification -->
+    <div id="itemAddedAlert"
+         class="toast toast1 align-items-center border-0 position-fixed bottom-0 start-50 translate-middle-x mb-5"
+         role="alert" th:if="${addedMessage}">
+        <div class="d-flex">
+            <div class=" m-auto ms-2">
+                <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+            </div>
+            <div class="toast-body fw-semibold pt-2">
+                <span th:text="${addedMessage}">Item added successfully</span>
+
+            </div>
+            <div class="me-2 m-auto">
+                <button type="button" class="btn-close btn-close-dark " data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Item Removed Notification -->
+    <div id="itemRemovedAlert"
+         class="toast toast2 align-items-center text-white border-0 position-fixed bottom-0 start-50 translate-middle-x mb-5"
+         role="alert" th:if="${removedMessage}">
+        <div class="d-flex">
+            <div class=" m-auto ms-2">
+                <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+            </div>
+            <div class="toast-body fw-semibold pt-2">
+                <span th:text="${removedMessage}"></span>
+            </div>
+
+            <div class="me-2 m-auto">
+                <button type="button" class="btn-close btn-close-white " data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/cart.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

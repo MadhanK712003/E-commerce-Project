@@ -25,7 +25,7 @@ public class Product {
     @Column(name = "image")
     private String image;
 
-    public Product(){
+    public Product() {
 
     }
 

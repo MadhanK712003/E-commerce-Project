@@ -1,127 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Product List</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        .product-card {
-            width: 100%;
-            height: 530px;
-            overflow: hidden;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-        }
+    <title>All Products</title>
 
-        .product-card img {
-        object-fit: cover;
-        height: 330px;
-        width : 100%
-        }
+    <!-- Include common head (Bootstrap, fonts, styles) -->
+    <th:block th:replace="~{globalnavbar :: commonHead}"></th:block>
 
-        .card-body {
-            padding: 10px;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .card-text {
-            font-size: 16px;
-            height: 66px;
-            overflow: hidden;
-        }
-
-        .price {
-            font-weight: bold;
-            color: #333;
-        }
+    <link rel="stylesheet" th:href="@{/css/home-style.css}" />
 
 
-        .add-btn {
-            margin-top: auto;
-        }
-
-        .filter-box {
-            position: sticky;
-            top: 70px;
-        }
-    </style>
 </head>
-<body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">My Shop</a>
+<body>
 
-        <form class="d-flex" th:action="@{/products/search}" method="get">
-            <input class="form-control me-2" type="search" name="keyword" placeholder="Search products..." aria-label="Search">
-            <button class="btn btn-outline-light" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
+<!-- Include Navbar Fragment -->
+<th:block th:replace="~{globalnavbar :: navbar}"></th:block>
 
+<!-- Page Heading -->
 <div class="text-center mt-4">
-    <h2 class="mb-4">All Products</h2>
+    <h2 class="mb-4 fw-bold">All Products</h2>
 </div>
 
-<div class="container-fluid py-5">
+<!-- Main Container -->
+<div class="container-fluid py-4">
     <div class="row">
-        <!-- LEFT: Filter Sidebar -->
-        <div class="col-md-3">
-            <div class="bg-white p-4 rounded shadow filter-box">
-                <h5>Filter Products</h5>
-                <form method="get" th:action="@{/products}">
 
+        <!-- Sidebar Filter -->
+        <div class="col-md-3">
+            <div class="filter-box">
+                <h5>Filter Products</h5>
+                <form method="get" th:action="@{/products/filter}">
                     <div class="mb-3">
                         <label class="form-label">Category</label>
                         <select name="category" class="form-select">
                             <option value="">All Categories</option>
-                            <option th:each="cat : ${categories}"
-                                    th:value="${cat}"
-                                    th:text="${cat}"
+                            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
                                     th:selected="${cat == selectedCategory}">
                             </option>
                         </select>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="Enter name" th:value="${param.name}">
+                    </div>
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Product Name</label>
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter name">
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label">Min Price</label>
-                        <input type="number" class="form-control" name="minPrice" placeholder="₹0 "  step="0.01">
+                        <input type="number" class="form-control" name="minPrice" placeholder="₹0" step="0.01"
+                               th:value="${param.minPrice}">
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">Max Price</label>
-                        <input type="number" class="form-control" name="maxPrice"  placeholder="₹1000000 " step="0.01">
+                        <input type="number" class="form-control" name="maxPrice" placeholder="₹100000" step="0.01"
+                               th:value="${param.maxPrice}">
                     </div>
+
                     <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
                 </form>
             </div>
         </div>
 
-        <!-- RIGHT: Product Cards -->
+        <!-- Products Grid / Error Message -->
         <div class="col-md-9">
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                <div class="col" th:each="product : ${products}">
-                    <div class="card product-card d-flex flex-column">
-                        <img th:src="@{'/images/' + ${product.image}}" class="card-img-top" alt="Product Image">
-                        <div class="card-body d-flex flex-column">
-                            <h4 class="card-title" th:text="${product.name}"></h4>
+            <div th:if="${error}" class="alert alert-danger fw-semibold text-center">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${error}"></span>
+            </div>
 
-                            <p class="card-text mb-4" th:text="${product.description}"></p>
-                            <h6 class="card-subtitle mb-3" th:text="'Category: ' + ${product.category}"></h6>
-                            <div class="price mb-3" th:text="'Price: ' + '₹' + ${product.price}"></div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${products}">
+                <div class="col" th:each="product : ${products}">
+                    <a th:href="@{/products/detail/{id}(id=${product.id})}" style="text-decoration: none; color: inherit;">
+                        <div class="card product-card">
+                            <img th:src="@{'/images/' + ${product.image}}" class="card-img-top" alt="Product Image" />
+                            <div class="card-body">
+                                <div>
+                                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                                    <p class="card-text" th:text="${product.description}"></p>
+                                    <p class="category"><strong>Category:</strong> <span th:text="${product.category}"></span></p>
+                                </div>
+                                <p class="card-price"><strong>Price:</strong> ₹<span th:text="${product.price}"></span></p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
-    </div> <!-- End row -->
-</div> <!-- End container -->
+
+    </div> <!-- /.row -->
+
+    <!-- Logout Success -->
+    <div th:if="${param.logout}" id="logoutAlertMsg"
+         class="toast logout-toast bg-danger align-items-center border-0 position-fixed bottom-0 start-50 translate-middle-x mb-5"
+         role="alert">
+        <div class="d-flex">
+            <div class=" m-auto ms-2">
+                <i class="bi bi-box-arrow-right me-2 fs-5 text-white"></i>
+            </div>
+            <div class="toast-body fw-semibold pt-2 text-white">
+
+                <span>You’ve been logged out!</span>
+
+            </div>
+            <div class="me-2 m-auto">
+                <button type="button" class="btn-close btn-close-white " data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div> <!-- /.container -->
+
+<!-- Footer -->
+<footer class="text-center bg-primary py-3">
+    <p class="m-auto text-white fw-bold">&copy;2025 E-commerce. All rights reserved.</p>
+</footer>
+
+
+<script>
+    window.addEventListener("DOMContentLoaded", function () {
+      const logoutAlert = document.getElementById('logoutAlertMsg');
+      if (logoutAlert) {
+        const logout = new bootstrap.Toast(logoutAlert, { delay: 3000 });
+        logout.show();
+      }
+    });
+</script>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

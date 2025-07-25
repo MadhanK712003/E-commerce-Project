@@ -6,9 +6,11 @@ import java.util.List;
 
 public interface ProductService {
 
-    //List<Product> getAllProducts();
+    List<Product> getAllProducts();
 
     List<Product> filterProducts(String name, Double minPrice, Double maxPrice, String category);
 
     List<String> getAllCategories();
+
+    Product getProductById(Long id);
 }

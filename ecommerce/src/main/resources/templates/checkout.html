@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Order Summary</title>
+
+    <!-- Include common head (Bootstrap, fonts, styles) -->
+    <th:block th:replace="~{globalnavbar :: commonHead}"></th:block>
+
+    <link rel="stylesheet" th:href="@{/css/checkout-style.css}" />
+
+</head>
+
+<body>
+
+<!-- Include Navbar Fragment -->
+<th:block th:replace="~{globalnavbar :: navbar}"></th:block>
+
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center fw-bold">Order Summary</h2>
+
+    <div class="row">
+        <!-- Left: Product Items -->
+        <div class="col-md-8">
+            <div th:each="item : ${cartItems}" class="product-card">
+                <img th:src="@{'/images/' + ${item.imageUrl}}" alt="Product" class="product-img"
+                     onerror="this.src='https://via.placeholder.com/90'">
+
+                <div class="product-details">
+                    <h5 th:text="${item.name}">Product Name</h5>
+                    <p class="product-details-text" th:text="${item.description}"></p>
+                    <p>Price: ₹<span th:text="${item.price}">0</span></p>
+                    <p>Quantity: <span th:text="${item.quantity}">1</span></p>
+                    <p class="fw-bold text-success">Subtotal: ₹<span th:text="${item.price * item.quantity}">0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="col-md-4">
+            <div class="s-box">
+                <div class="summary-box">
+                    <h5>Price Details</h5>
+                    <div class="summary-row">
+                        <span>Price (items)</span>
+                        <span>₹<span th:text="${total}">0</span></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Charges</span>
+                        <span class="text-success">Free</span>
+                    </div>
+                    <hr>
+                    <div class="summary-row fw-bold">
+                        <span>Total Amount</span>
+                        <span>₹<span th:text="${total}">0</span></span>
+                    </div>
+                    <a th:href="@{/order/placed}" class="btn btn-success place-order-btn">Place Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+body {
+    background-color: #f5f5f5;
+    font-family: 'Inter', sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.all-product {
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+}
+
+.all-product:hover {
+    color: #d6d5d3;
+}
+
+.login-btn {
+    width: 80px;
+    color: #0a58ca;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.dropdown-menu .dropdown-item:active,
+.dropdown-menu .dropdown-item:focus {
+    background-color: transparent;
+    color: #dc3545;
+}
