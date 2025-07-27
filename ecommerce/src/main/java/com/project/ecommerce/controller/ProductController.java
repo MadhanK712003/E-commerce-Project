@@ -34,7 +34,7 @@ public class ProductController {
         return "home";
     }
 
-    //Method handles filters by name, category, min/max price
+    //Method handles filters by product name, category, min/max price
     @GetMapping("/products/filter")
     public String showFilteredProducts(
             @RequestParam(value = "name", required = false) String name,
